@@ -19,6 +19,14 @@ try {
 // ADD A USER IN DATABASE 
 router.post("/addUser" , async(req,res) => {
     try {
+        // FINDING IF USER ALREADY EXIST WITH THE EMAIL
+        const existingUser = await User.findOne({email:req.body.email})
+
+        // IF USER EXISTS WITH THE SAME EMAIL RETURN WITH BAD REQUEST
+        if(existingUser){
+            return res.status(400).send("a user with this email already exist")
+        }
+
         // CREATING A USER 
         const createUser = await User.create({
            name : req.body.name,

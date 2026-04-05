@@ -53,6 +53,9 @@ router.get("/getSingleCar/:carId" , async(req,res) => {
   try {
     const {carId} = req.params;
     const getSingleCarById = await Car.findById(carId);
+    if(!getSingleCarById){
+      res.status(400).send("sorry this car is not avaiable in our garage")
+    }
     res.status(200).json(getSingleCarById);
   } catch (error) {
     console.log("actual error is", error.message)
