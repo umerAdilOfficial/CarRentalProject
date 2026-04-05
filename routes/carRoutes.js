@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Car = require("../models/Cars");
 const Booking = require("../models/Booking");
+const adminMiddleware = require("../Middleware/authMiddleware")
 
 // ADDING A CAR IN DATABASE
-router.post("/addCar", async (req, res) => {
+router.post("/addCar",adminMiddleware, async (req, res) => {
   try {
     // CREATING A CAR IN DATABASE
     const car = await Car.create({
@@ -37,7 +38,7 @@ router.get("/getAllCars", async (req, res) => {
 });
 
 // THERE ADMIN CAN DELETE A CAR 
-router.delete("/deleteCar/:carId" , async(req,res) => {
+router.delete("/deleteCar/:carId",adminMiddleware , async(req,res) => {
   try {
     const {carId} = req.params;
     const deleteCar = await Car.findByIdAndDelete(carId);
@@ -60,7 +61,7 @@ router.get("/getSingleCar/:carId" , async(req,res) => {
 })
 
 // UPDATE ANY CAR IN DATABASE AND ANY INFORMATION OF CAR
-router.put("/updateCar/:carId" , async(req,res) => {
+router.put("/updateCar/:carId" ,adminMiddleware, async(req,res) => {
 try {
   const {carId} = req.params;
   const {name , brand , availability , category , pricePerDay , description} = req.body;

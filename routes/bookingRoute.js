@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Booking");
 const Car = require("../models/Cars");
+const adminMiddleware = require("../Middleware/authMiddleware")
 
 // USER CAN BOOK A CAR HERE 
 router.post("/bookCar", async (req, res) => {
@@ -95,7 +96,7 @@ router.delete("/cancelBooking/:bookingId" , async(req,res) => {
 });
 
 // ALL BOOKINGS NOT SPECIFIED BY USER
-router.get("/getAllBookings" , async(req,res) => {
+router.get("/getAllBookings" ,adminMiddleware, async(req,res) => {
   try {
 
     // GETTING ALL BOOKINGS FROM DATABASE
@@ -113,7 +114,7 @@ router.get("/getAllBookings" , async(req,res) => {
 })
 
 // GETTING A BOOKING SPECIFIED BY BOOKING ID FOR ADMIN DASHBOARD
-router.get("/getOneBooking/:bookingId" , async(req,res) => {
+router.get("/getOneBooking/:bookingId" ,adminMiddleware, async(req,res) => {
    try {
 
     // GETTING BOOKING ID FROM REQUEST
@@ -129,7 +130,7 @@ router.get("/getOneBooking/:bookingId" , async(req,res) => {
    };
 });
 
-router.put("/updateStatus/:bookingId" , async(req,res) => {
+router.put("/updateStatus/:bookingId" ,adminMiddleware, async(req,res) => {
   try {
     const {bookingId} = req.params;
     const  {status} = req.body
@@ -146,7 +147,7 @@ router.put("/updateStatus/:bookingId" , async(req,res) => {
 })
 
 
-router.get("/confirmedBookings" , async(req,res) => {
+router.get("/confirmedBookings" ,adminMiddleware, async(req,res) => {
 try {
   const confirmedBooking = await Booking.find({status:"Confirmed"}).populate("userId" , "name");
   res.status(200).json(confirmedBooking)
