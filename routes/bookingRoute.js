@@ -112,5 +112,47 @@ router.get("/getAllBookings" , async(req,res) => {
   }
 })
 
+// GETTING A BOOKING SPECIFIED BY BOOKING ID FOR ADMIN DASHBOARD
+router.get("/getOneBooking/:bookingId" , async(req,res) => {
+   try {
 
+    // GETTING BOOKING ID FROM REQUEST
+    const {bookingId} = req.params;
+
+    // GETTING BOOKING BY ID AND ALSO GIVE USERNAME AND CARNAME OF BOOKING 
+    const getOneBooking = await Booking.findById(bookingId).populate("carId" , "name").populate("userId" , "name");
+    console.log(bookingId)
+    res.status(200).json(getOneBooking);
+   } catch (error) {
+    console.log("the actual error is" , error.message)
+    res.status(400).send("Booking not find")
+   };
+});
+
+router.put("/updateStatus/:bookingId" , async(req,res) => {
+  try {
+    const {bookingId} = req.params;
+    const  {status} = req.body
+    const updatedBooking = await Booking.findByIdAndUpdate(bookingId , {status:status} , {new : true})
+
+    if(!updatedBooking){
+      return res.status(400).send("Booking not found")
+    }
+    res.status(200).json(updatedBooking)
+  } catch (error) {
+    console.log("the actual error is " , error.message)
+   res.status(400).send("Some Interval Error") 
+  }
+})
+
+
+router.get("/confirmedBookings" , async(req,res) => {
+try {
+  const confirmedBooking = await Booking.find({status:"Confirmed"}).populate("userId" , "name");
+  res.status(200).json(confirmedBooking)
+} catch (error) {
+  console.log("the actual error is " , error.message)
+  res.status(400).send("Internal Error")
+}
+})
 module.exports = router;
